@@ -138,7 +138,7 @@ public class AnimationManager : MonoBehaviour
         canvas.enabled = false;
         foreach(float lenght in cliplengths)
         {
-            tiempo =  cliplengths[cliplengths.IndexOf(lenght)] * 24;
+            tiempo +=  cliplengths[cliplengths.IndexOf(lenght)] * 24;
         }
         StartCoroutine(preview());
         StartCoroutine(Record());
