@@ -52,7 +52,7 @@ public class AnimationManager : MonoBehaviour
 
     int o = 0;
 
-    float tiempo = 0;
+    float tiempo;
 
 
     float cliplenght;
@@ -62,14 +62,11 @@ public class AnimationManager : MonoBehaviour
     public List<Texture2D> Textures = new List<Texture2D>();
     string path1 = @"C:\Users\ElConchesumadre\Documents";
 
-    List<float> cliplengths = new List<float>();
 
     void Start()
     {
 
         trans = GetComponent<Transform>();
-
-        Application.targetFrameRate = 24;
 
     }
 
@@ -115,7 +112,6 @@ public class AnimationManager : MonoBehaviour
         foreach(GameObject scene in sceneslist)
         {
             cliplenght = anim.GetComponent<Animation>().clip.length;
-            cliplengths.Add(cliplenght);
             anim.SetInteger("Anim", scene.GetComponent<Dropdown>().value);
             yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght * 0.2);
             yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght * 0.9);
@@ -137,16 +133,24 @@ public class AnimationManager : MonoBehaviour
     public void Grabar()
     {
         canvas.enabled = false;
-        foreach(float lenght in cliplengths)
+
+        foreach (GameObject scene in sceneslist)
         {
-            tiempo +=  cliplengths[cliplengths.IndexOf(lenght)] * 24;
+            cliplenght = anim.GetComponent<Animation>().clip.length;
+            tiempo += cliplenght * 24;
+            anim.SetInteger("Anim", scene.GetComponent<Dropdown>().value);
+            anim.SetTrigger("Idle");
         }
+        Debug.Log(tiempo);
         StartCoroutine(preview());
         StartCoroutine(Record());
     }
     IEnumerator Record()
     {
         Debug.Log("Va,p aa grabar");
+
+        Application.targetFrameRate = 24;
+
 
         var videoAttr = new VideoTrackAttributes
         {
@@ -190,6 +194,7 @@ public class AnimationManager : MonoBehaviour
             }
             encoder.Dispose();
             Debug.Log("Ligsto");
+            tiempo = 0;
         }
 }
 
