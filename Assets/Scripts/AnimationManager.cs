@@ -126,6 +126,7 @@ public class AnimationManager : MonoBehaviour
             Debug.Log(cliplenght);
             anim.SetTrigger("Idle");
         }
+        canvas.enabled = true;
         anim.SetInteger("Anim", 30);
         anim.Play("Idle");
         yield return null;
