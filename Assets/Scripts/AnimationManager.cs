@@ -179,7 +179,7 @@ public class AnimationManager : MonoBehaviour
             tex.ReadPixels(new Rect(0, 0, Camara.targetTexture.width, Camara.targetTexture.height), 0, 0);
             tex.Apply();
             Textures.Add(tex);
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
             Debug.Log("Frame Number" + i);
 
         }
