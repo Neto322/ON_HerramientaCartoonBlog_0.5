@@ -67,14 +67,16 @@ public class Item : MonoBehaviour
         switch (DpScenes.value)
         {
             case 6:
-                posiciontextoCuerpo = new Vector2(12f, 2f);
+                posiciontextoCuerpo = new Vector2(12f, 1.9f);
                 textWidthHeightCuerpo = new Vector2(19f, 5.5f);
-                posiciontextoCabecera = new Vector2(11.05f, 2.3f);
+                posiciontextoCabecera = new Vector2(12f, 3f);
                 textWidthHeightCabecera = new Vector2(18.39f, 5.5f);
                 break;
             case 7:
                 posiciontextoCuerpo = new Vector2(7.43f, 2.04f);
                 textWidthHeightCuerpo = new Vector2(30f, 5.34f);
+                posiciontextoCabecera = new Vector2(2.18f, 3f);
+                textWidthHeightCabecera = new Vector2(18.39f, 5.5f);
                 break;
         }
     }

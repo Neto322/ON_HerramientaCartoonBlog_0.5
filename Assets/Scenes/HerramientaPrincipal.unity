@@ -4325,11 +4325,9 @@ MonoBehaviour:
   displaytextCabecera: {fileID: 2041906536}
   anim: {fileID: 300538075}
   anim2: {fileID: 672360272}
-  Dps: {fileID: 1513793335}
-  itemTextCuerpo: {fileID: 789932937}
-  itemTextCabecera: {fileID: 1587952344}
+  ItemSelector: {fileID: 1513793335}
   ItemList: []
-  Yspace: 160
+  Yspace: 70
   Xspace: 80
   canvas: {fileID: 1312840270}
   CamaraTexture: {fileID: 8400000, guid: a4da70e141d44664f9fe3511b8d93a3b, type: 2}

@@ -31,15 +31,9 @@ public class AnimationManager : MonoBehaviour
     int a;
 
     [SerializeField]
-     GameObject Dps;
+     GameObject ItemSelector;
 
-    [SerializeField]
-    InputField itemTextCuerpo;
 
-    [SerializeField]
-    InputField itemTextCabecera;
-
-    [SerializeField]
 
 
      public   List<GameObject> ItemList = new List<GameObject>();
@@ -79,9 +73,9 @@ public class AnimationManager : MonoBehaviour
         trans = GetComponent<Transform>();
 
 
-        displaytextCuerpo.transform.position = new Vector2(0,25);
+        displaytextCuerpo.transform.position = new Vector2(0,250);
 
-        displaytextCabecera.transform.position = new Vector2(0, 25);
+        displaytextCabecera.transform.position = new Vector2(0, 250);
 
 
     }
@@ -106,7 +100,7 @@ public class AnimationManager : MonoBehaviour
     public void AgregarDropDown()
     {
         o++;
-        GameObject item = Instantiate(Dps, new Vector2(0, 0), Quaternion.identity) as GameObject;
+        GameObject item = Instantiate(ItemSelector, new Vector2(0, 0), Quaternion.identity) as GameObject;
 
 
         item.transform.SetParent(trans.transform);
@@ -121,14 +115,7 @@ public class AnimationManager : MonoBehaviour
 
     }
 
-    public void EliminarDropDown()
-    {
-        ItemList.RemoveAt(ItemList.Count - 1);
 
-        o--;
-
-
-    }
     IEnumerator preview()
     {
         foreach (GameObject scene in ItemList)
@@ -139,8 +126,8 @@ public class AnimationManager : MonoBehaviour
             displaytextCuerpo.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCuerpo;
             displaytextCuerpo.text = scene.transform.GetChild(2).GetComponent<InputField>().text;
 
-            displaytextCabecera.transform.position = scene.GetComponent<Item>().posiciontextoCuerpo;
-            displaytextCabecera.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCuerpo;
+            displaytextCabecera.transform.position = scene.GetComponent<Item>().posiciontextoCabecera;
+            displaytextCabecera.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCabecera;
             displaytextCabecera.text = scene.transform.GetChild(3).GetComponent<InputField>().text;
 
             Debug.Log(cliplenght);
