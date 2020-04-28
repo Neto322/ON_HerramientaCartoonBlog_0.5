@@ -7,11 +7,17 @@ using UnityEditor.Media;
 using System.IO;
 using Unity.Collections;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 
 public class AnimationManager : MonoBehaviour
 {
     // Start is called before the first frame update
+    [SerializeField]
+    TextMeshPro displaytextCuerpo;
+
+    [SerializeField]
+    public TextMeshPro displaytextCabecera;
 
 
     [SerializeField]
@@ -22,10 +28,19 @@ public class AnimationManager : MonoBehaviour
     [SerializeField]
      Animator anim2;
 
-
+    int a;
 
     [SerializeField]
      GameObject Dps;
+
+    [SerializeField]
+    InputField itemTextCuerpo;
+
+    [SerializeField]
+    InputField itemTextCabecera;
+
+    [SerializeField]
+
 
      public   List<GameObject> ItemList = new List<GameObject>();
 
@@ -57,10 +72,16 @@ public class AnimationManager : MonoBehaviour
     public List<Texture2D> Textures = new List<Texture2D>();
     string path1 = @"C:\Users\ElConchesumadre\Documents";
 
-    bool stop;
     void Start()
     {
+      
+
         trans = GetComponent<Transform>();
+
+
+        displaytextCuerpo.transform.position = new Vector2(0,25);
+
+        displaytextCabecera.transform.position = new Vector2(0, 25);
 
 
     }
@@ -71,6 +92,8 @@ public class AnimationManager : MonoBehaviour
         canvas.enabled = false;
 
         tiempo = 0;
+
+        
 
         StartCoroutine(preview());
     }
@@ -97,18 +120,36 @@ public class AnimationManager : MonoBehaviour
 
 
     }
+
+    public void EliminarDropDown()
+    {
+        ItemList.RemoveAt(ItemList.Count - 1);
+
+        o--;
+
+
+    }
     IEnumerator preview()
     {
         foreach (GameObject scene in ItemList)
         {
             anim.SetInteger("Anim", scene.transform.GetChild(0).GetComponent<Dropdown>().value);
             cliplenght = anim.GetComponent<Animation>().clip.length;
+            displaytextCuerpo.transform.position = scene.GetComponent<Item>().posiciontextoCuerpo;
+            displaytextCuerpo.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCuerpo;
+            displaytextCuerpo.text = scene.transform.GetChild(2).GetComponent<InputField>().text;
+
+            displaytextCabecera.transform.position = scene.GetComponent<Item>().posiciontextoCuerpo;
+            displaytextCabecera.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCuerpo;
+            displaytextCabecera.text = scene.transform.GetChild(3).GetComponent<InputField>().text;
+
             Debug.Log(cliplenght);
-            yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght * 0.2);
+            yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght - 0.2);
             yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght - 0.5);
             anim2.Play("Idle");
             anim2.SetInteger("Anim", scene.transform.GetChild(1).GetComponent<Dropdown>().value);
             yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght);
+            displaytextCuerpo.transform.position = new Vector2(0, 25);
             anim.SetTrigger("Idle");
         }
         canvas.enabled = true;
