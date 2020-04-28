@@ -22,16 +22,17 @@ public class Item : MonoBehaviour
     InputField text;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void FixedUpdate()
+
+    public void ChecarValor()
     {
-    
+        if (DpScenes.value >= 6)
         {
+            text.interactable = true;
+        }
+        else
+        {
+            text.interactable = false;
 
         }
     }

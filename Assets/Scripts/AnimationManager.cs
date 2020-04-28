@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEditor.Media;
 using System.IO;
 using Unity.Collections;
+using UnityEngine.SceneManagement;
 
 
 public class AnimationManager : MonoBehaviour
@@ -14,27 +15,20 @@ public class AnimationManager : MonoBehaviour
 
 
     [SerializeField]
-    Animator anim;
+      Animator anim;
 
 
 
     [SerializeField]
-    Animator anim2;
+     Animator anim2;
 
 
 
     [SerializeField]
-    GameObject dropdownitem;
+     GameObject Dps;
 
-    [SerializeField]
-    GameObject dropdownitem2;
+     public   List<GameObject> ItemList = new List<GameObject>();
 
-
-    public List<GameObject> sceneslist = new List<GameObject>();
-
-
-
-    public List<GameObject> transitionlist = new List<GameObject>();
 
     [SerializeField]
     int Yspace;
@@ -52,21 +46,22 @@ public class AnimationManager : MonoBehaviour
 
     int o = 0;
 
-    float tiempo;
 
 
     float cliplenght;
+
+    float tiempo;
 
     public RenderTexture CamaraTexture;
     public Camera Camara;
     public List<Texture2D> Textures = new List<Texture2D>();
     string path1 = @"C:\Users\ElConchesumadre\Documents";
 
-
+    bool stop;
     void Start()
     {
-
         trans = GetComponent<Transform>();
+
 
     }
 
@@ -75,14 +70,20 @@ public class AnimationManager : MonoBehaviour
     {
         canvas.enabled = false;
 
+        tiempo = 0;
+
         StartCoroutine(preview());
     }
 
+    void DetenerRutinas()
+    {
+        StopAllCoroutines();
+    }
 
     public void AgregarDropDown()
     {
         o++;
-        GameObject item = Instantiate(dropdownitem, new Vector2(0, 0), Quaternion.identity) as GameObject;
+        GameObject item = Instantiate(Dps, new Vector2(0, 0), Quaternion.identity) as GameObject;
 
 
         item.transform.SetParent(trans.transform);
@@ -91,38 +92,27 @@ public class AnimationManager : MonoBehaviour
 
 
 
-        sceneslist.Add(item);
+        ItemList.Add(item);
 
 
-        GameObject item2 = Instantiate(dropdownitem2, new Vector2(0, 0), Quaternion.identity) as GameObject;
-
-
-        item2.transform.SetParent(trans.transform);
-        item2.transform.localScale = new Vector3(1, 1, 1);
-        item2.transform.position = new Vector2(trans.position.x + Xspace, trans.position.y - (o * Yspace));
-
-
-
-        transitionlist.Add(item2);
 
     }
     IEnumerator preview()
     {
-    
-        foreach(GameObject scene in sceneslist)
+        foreach (GameObject scene in ItemList)
         {
+            anim.SetInteger("Anim", scene.transform.GetChild(0).GetComponent<Dropdown>().value);
             cliplenght = anim.GetComponent<Animation>().clip.length;
-            anim.SetInteger("Anim", scene.GetComponent<Dropdown>().value);
-            yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght * 0.2);
-            yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght * 0.9);
-            Debug.Log(cliplenght * 0.8);
-            anim2.Play("Idle");
-            anim2.SetInteger("Anim", transitionlist[sceneslist.IndexOf(scene)].GetComponent<Dropdown>().value);
-            yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght);
             Debug.Log(cliplenght);
+            yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght * 0.2);
+            yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght - 0.5);
+            anim2.Play("Idle");
+            anim2.SetInteger("Anim", scene.transform.GetChild(1).GetComponent<Dropdown>().value);
+            yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght);
             anim.SetTrigger("Idle");
         }
         canvas.enabled = true;
+     
         anim.SetInteger("Anim", 30);
         anim.Play("Idle");
         yield return null;
@@ -133,23 +123,29 @@ public class AnimationManager : MonoBehaviour
     public void Grabar()
     {
         canvas.enabled = false;
-
-        foreach (GameObject scene in sceneslist)
+        Application.targetFrameRate = 24;
+        foreach (GameObject scene in ItemList)
         {
-            cliplenght = anim.GetComponent<Animation>().clip.length;
-            tiempo += cliplenght * 24;
-            anim.SetInteger("Anim", scene.GetComponent<Dropdown>().value);
-            anim.SetTrigger("Idle");
+            if (scene.transform.GetChild(0).GetComponent<Dropdown>().value >= 6)
+            {
+                tiempo += 15;
+            }
+            else
+            {
+                tiempo += 9;
+            }
         }
-        Debug.Log(tiempo);
+
+        tiempo = tiempo * 24;
+
         StartCoroutine(preview());
         StartCoroutine(Record());
+
     }
     IEnumerator Record()
     {
-        Debug.Log("Va,p aa grabar");
+        Debug.Log("Comenzando Grabacion");
 
-        Application.targetFrameRate = 24;
 
 
         var videoAttr = new VideoTrackAttributes
@@ -164,7 +160,7 @@ public class AnimationManager : MonoBehaviour
         {
             sampleRate = new MediaRational(48000),
             channelCount = 2,
-            language = "fr"
+            language = "esp"
         };
 
         int sampleFramesPerVideoFrame = audioAttr.channelCount * audioAttr.sampleRate.numerator / videoAttr.frameRate.numerator;
@@ -172,6 +168,8 @@ public class AnimationManager : MonoBehaviour
         var encodedFilePath = Path.Combine(Path.GetFullPath(path1), "Video.mp4");
         for (int i = 0; i <= tiempo; i++)
         {
+            Debug.Log("Frame " + i + " de " + tiempo);
+
             RenderTexture rendText = RenderTexture.active;
             RenderTexture.active = Camara.targetTexture;
             Camara.Render();
@@ -179,14 +177,16 @@ public class AnimationManager : MonoBehaviour
             tex.ReadPixels(new Rect(0, 0, Camara.targetTexture.width, Camara.targetTexture.height), 0, 0);
             tex.Apply();
             Textures.Add(tex);
-            yield return new WaitForFixedUpdate();
-            Debug.Log("Frame Number" + i);
-
+            yield return new WaitForSeconds(0.030f);
         }
+
+        tiempo = 0;
 
         using (var encoder = new MediaEncoder(encodedFilePath, videoAttr, audioAttr))
         using (var audioBuffer = new NativeArray<float>(sampleFramesPerVideoFrame, Allocator.Temp))
         {
+            Debug.Log("Va a preparar el video");
+
             foreach (Texture2D tex in Textures)
             {
                 encoder.AddFrame(tex);
@@ -194,9 +194,17 @@ public class AnimationManager : MonoBehaviour
             }
             encoder.Dispose();
             Debug.Log("Ligsto");
-            tiempo = 0;
+         
         }
-}
+        Application.targetFrameRate = 60;
+        canvas.enabled = true;
 
+        Textures.Clear();
+
+        Scene loadedLevel = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(loadedLevel.buildIndex);
 
     }
+}
+
+    
