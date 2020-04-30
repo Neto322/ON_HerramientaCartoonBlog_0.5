@@ -13,14 +13,12 @@ using TMPro;
 public class AnimationManager : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField]
-    TextMeshPro displaytextCuerpo;
 
-    
-    
+
 
     [SerializeField]
-    public TextMeshPro displaytextCabecera;
+    GameObject textos;
+
 
 
 
@@ -31,6 +29,10 @@ public class AnimationManager : MonoBehaviour
 
     [SerializeField]
      Animator anim2;
+
+
+    [SerializeField]
+    Animator textAnim;
 
     int a;
 
@@ -78,9 +80,6 @@ public class AnimationManager : MonoBehaviour
         trans = GetComponent<Transform>();
 
 
-        displaytextCuerpo.transform.position = new Vector2(0,250);
-
-        displaytextCabecera.transform.position = new Vector2(0, 250);
 
       
 
@@ -102,9 +101,39 @@ public class AnimationManager : MonoBehaviour
         StartCoroutine(preview());
     }
 
-    void DetenerRutinas()
+    void ModificarTexto(GameObject scene)
     {
-        StopAllCoroutines();
+        textAnim = textos.GetComponent<Animator>();
+
+
+        if(scene.transform.GetChild(0).GetComponent<Dropdown>().value == 6)
+        {
+            textAnim.SetInteger("TextAnim", scene.transform.GetChild(0).GetComponent<Dropdown>().value);
+
+        
+
+            textos.transform.GetChild(0).GetComponent<TextMeshPro>().text = scene.transform.GetChild(2).GetComponent<InputField>().text;
+
+            textos.transform.GetChild(1).GetComponent<TextMeshPro>().text = scene.transform.GetChild(3).GetComponent<InputField>().text;
+
+         
+
+        }
+
+        if (scene.transform.GetChild(0).GetComponent<Dropdown>().value == 7)
+        {
+            textAnim.SetInteger("TextAnim", scene.transform.GetChild(0).GetComponent<Dropdown>().value);
+
+
+
+            textos.transform.GetChild(2).GetComponent<TextMeshPro>().text = scene.transform.GetChild(2).GetComponent<InputField>().text;
+
+            textos.transform.GetChild(3).GetComponent<TextMeshPro>().text = scene.transform.GetChild(3).GetComponent<InputField>().text;
+
+
+
+        }
+
     }
 
     public void AgregarDropDown()
@@ -131,30 +160,23 @@ public class AnimationManager : MonoBehaviour
         foreach (GameObject scene in ItemList)
         {
             anim.SetInteger("Anim", scene.transform.GetChild(0).GetComponent<Dropdown>().value);
+
             cliplenght = anim.GetComponent<Animation>().clip.length;
 
+            ModificarTexto(scene);
 
 
-          
-            displaytextCuerpo.text = scene.transform.GetChild(2).GetComponent<InputField>().text;
-            displaytextCuerpo.transform.position = scene.GetComponent<Item>().posiciontextoCuerpo;
-            displaytextCuerpo.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCuerpo;
-
-            displaytextCabecera.text = scene.transform.GetChild(3).GetComponent<InputField>().text;
-            displaytextCabecera.transform.position = scene.GetComponent<Item>().posiciontextoCabecera;
-            displaytextCabecera.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCabecera;
 
             Debug.Log(cliplenght);
             yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght - 0.2);
             yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght - 0.5);
             anim2.Play("Idle");
             anim2.SetInteger("Anim", scene.transform.GetChild(1).GetComponent<Dropdown>().value);
+            textAnim.SetTrigger("Idle");
+            textAnim.SetInteger("TextAnim", -2);
             yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght);
 
-            displaytextCuerpo.transform.position = new Vector2(0, 250);
-
-            displaytextCabecera.transform.position = new Vector2(0, 250);
-
+         
             anim.SetTrigger("Idle");
         }
         canvas.enabled = true;
@@ -223,7 +245,7 @@ public class AnimationManager : MonoBehaviour
             tex.ReadPixels(new Rect(0, 0, Camara.targetTexture.width, Camara.targetTexture.height), 0, 0);
             tex.Apply();
             Textures.Add(tex);
-            yield return new WaitForSeconds(0.030f);
+            yield return new WaitForEndOfFrame();
         }
 
         tiempo = 0;
