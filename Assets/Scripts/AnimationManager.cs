@@ -70,7 +70,9 @@ public class AnimationManager : MonoBehaviour
     public RenderTexture CamaraTexture;
     public Camera Camara;
     public List<Texture2D> Textures = new List<Texture2D>();
-    string path1 = @"C:\Users\ElConchesumadre\Documents";
+
+    //Ruta donde se guardara el video
+    string path1 = @"C:\Users\";
 
 
     void Start()
