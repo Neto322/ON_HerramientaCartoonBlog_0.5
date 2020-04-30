@@ -133,15 +133,16 @@ public class AnimationManager : MonoBehaviour
             anim.SetInteger("Anim", scene.transform.GetChild(0).GetComponent<Dropdown>().value);
             cliplenght = anim.GetComponent<Animation>().clip.length;
 
-            displaytextCuerpo.GetComponent<scriptTextoCuerpo>().anim.GetComponent<Animation>().Play(scene.transform.GetChild(0).GetComponent<Dropdown>().value.ToString());
 
+
+          
+            displaytextCuerpo.text = scene.transform.GetChild(2).GetComponent<InputField>().text;
             displaytextCuerpo.transform.position = scene.GetComponent<Item>().posiciontextoCuerpo;
             displaytextCuerpo.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCuerpo;
-            displaytextCuerpo.text = scene.transform.GetChild(2).GetComponent<InputField>().text;
 
+            displaytextCabecera.text = scene.transform.GetChild(3).GetComponent<InputField>().text;
             displaytextCabecera.transform.position = scene.GetComponent<Item>().posiciontextoCabecera;
             displaytextCabecera.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCabecera;
-            displaytextCabecera.text = scene.transform.GetChild(3).GetComponent<InputField>().text;
 
             Debug.Log(cliplenght);
             yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght - 0.2);
