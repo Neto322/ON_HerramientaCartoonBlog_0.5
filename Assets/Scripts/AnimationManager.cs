@@ -16,8 +16,12 @@ public class AnimationManager : MonoBehaviour
     [SerializeField]
     TextMeshPro displaytextCuerpo;
 
+    
+    
+
     [SerializeField]
     public TextMeshPro displaytextCabecera;
+
 
 
     [SerializeField]
@@ -66,6 +70,7 @@ public class AnimationManager : MonoBehaviour
     public List<Texture2D> Textures = new List<Texture2D>();
     string path1 = @"C:\Users\ElConchesumadre\Documents";
 
+
     void Start()
     {
       
@@ -76,6 +81,11 @@ public class AnimationManager : MonoBehaviour
         displaytextCuerpo.transform.position = new Vector2(0,250);
 
         displaytextCabecera.transform.position = new Vector2(0, 250);
+
+      
+
+        
+       
 
 
     }
@@ -122,6 +132,9 @@ public class AnimationManager : MonoBehaviour
         {
             anim.SetInteger("Anim", scene.transform.GetChild(0).GetComponent<Dropdown>().value);
             cliplenght = anim.GetComponent<Animation>().clip.length;
+
+            displaytextCuerpo.GetComponent<scriptTextoCuerpo>().anim.GetComponent<Animation>().Play(scene.transform.GetChild(0).GetComponent<Dropdown>().value.ToString());
+
             displaytextCuerpo.transform.position = scene.GetComponent<Item>().posiciontextoCuerpo;
             displaytextCuerpo.rectTransform.sizeDelta = scene.GetComponent<Item>().textWidthHeightCuerpo;
             displaytextCuerpo.text = scene.transform.GetChild(2).GetComponent<InputField>().text;
@@ -136,7 +149,11 @@ public class AnimationManager : MonoBehaviour
             anim2.Play("Idle");
             anim2.SetInteger("Anim", scene.transform.GetChild(1).GetComponent<Dropdown>().value);
             yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime * anim.GetComponent<Animation>().clip.length >= cliplenght);
-            displaytextCuerpo.transform.position = new Vector2(0, 25);
+
+            displaytextCuerpo.transform.position = new Vector2(0, 250);
+
+            displaytextCabecera.transform.position = new Vector2(0, 250);
+
             anim.SetTrigger("Idle");
         }
         canvas.enabled = true;
