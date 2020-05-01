@@ -1,13 +1,17 @@
-﻿using System.Collections;
+﻿#define UNITY_EDITOR_WIN
+
+using UnityEditor;
+using UnityEditor.Media;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor.Media;
 using System.IO;
 using Unity.Collections;
 using UnityEngine.SceneManagement;
 using TMPro;
+
 
 
 public class AnimationManager : MonoBehaviour
@@ -71,13 +75,20 @@ public class AnimationManager : MonoBehaviour
     public Camera Camara;
     public List<Texture2D> Textures = new List<Texture2D>();
 
+
+
     //Ruta donde se guardara el video
-    string path1 = @"C:\Users\";
+    [SerializeField]
+    InputField Ruta;
+
+
+
+    string path1;
 
 
     void Start()
     {
-      
+
 
         trans = GetComponent<Transform>();
 
@@ -94,6 +105,9 @@ public class AnimationManager : MonoBehaviour
 
     public void Preview()
     {
+       
+
+
         canvas.enabled = false;
 
         tiempo = 0;
@@ -192,6 +206,9 @@ public class AnimationManager : MonoBehaviour
 
     public void Grabar()
     {
+
+        path1 = System.IO.Directory.GetCurrentDirectory();
+
         canvas.enabled = false;
         Application.targetFrameRate = 24;
         foreach (GameObject scene in ItemList)

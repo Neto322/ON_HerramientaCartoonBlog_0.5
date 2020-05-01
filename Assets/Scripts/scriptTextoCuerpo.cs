@@ -31,7 +31,6 @@ public class scriptTextoCuerpo : MonoBehaviour
     {
         if(valorDp == 6)
         {
-            Debug.Log("PUUUTTAAAA");
 
             displaytextCuerpo.alignment = TextAlignmentOptions.Left;
 
